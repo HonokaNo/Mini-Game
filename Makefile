@@ -16,8 +16,13 @@ ENCODING = UTF8
 
 build : 
 	make clean
+	make game/ConsEsc.class
 	make game/Console.class
 	make game/Game.class
+
+run :
+	make build
+	$(JAVA) game.Game
 
 javadoc : 
 	$(JAVADOC) -encoding $(ENCODING) -d ..\docs -use -version -nohelp -charset $(ENCODING) -sourcetab 4 -docencoding $(ENCODING) \
@@ -30,4 +35,4 @@ clean :
 	cd game
 	$(REMOVE) $(REMOPT) *.class
 	cd ..
-	$(REMDIR) docs
+

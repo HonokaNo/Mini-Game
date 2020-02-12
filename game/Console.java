@@ -16,6 +16,16 @@ public final class Console
 	private static Locale defaultLocale = Locale.JAPAN;
 
 	/**
+	 * このコンソール環境で使用されるロケールを設定します。
+	 *
+	 * @param locale 設定する地域を示すロケール
+	 */
+	public static void setLocale(Locale locale)
+	{
+		defaultLocale = locale;
+	}
+
+	/**
 	 * コンソール出力で使用される改行コード
 	 */
 	public static final String NEWLINE = "\n";
