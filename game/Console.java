@@ -138,4 +138,22 @@ public final class Console
 	{
 		put(getEscapeString(str, escapes));
 	}
+
+	/**
+	 * 引数で指定されたカラーコードでメッセージを出力します。
+	 * memo:この関数ではANSIエスケープシーケンスを使用
+	 * Linux系列だとうまくいくことが多くWindowsだとうまくいきにくい
+	 *
+	 * @param str 出力するメッセージ
+	 * @param color 0-255のカラーコード それ以外の値の場合動作未保障
+	 */
+	public static void putcolc(String str, int color)
+	{
+		put("\\u001B[38;5;" + color + "m" + str);
+	}
+
+	public static void putcolrgb(String str, int r, int g, int b)
+	{
+		put("\\u001B[38;2;" + r + ";" + g + ";" + b + "m" + str);
+	}
 }
