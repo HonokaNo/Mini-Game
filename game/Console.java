@@ -152,6 +152,16 @@ public final class Console
 		put("\\u001B[38;5;" + color + "m" + str);
 	}
 
+	/**
+	 * 引数で指定されたRGBでメッセージを出力します。
+	 * memo:この関数ではANSIエスケープシーケンスを使用
+	 * Linux系列だとうまくいくことが多くWindowsだとうまくいきにくい
+	 *
+	 * @param str 出力するメッセージ
+	 * @param r 0-255のRGBのR
+	 * @param g 0-255のRGBのG
+	 * @param b 0-255のRGBのB
+	 */
 	public static void putcolrgb(String str, int r, int g, int b)
 	{
 		put("\\u001B[38;2;" + r + ";" + g + ";" + b + "m" + str);
