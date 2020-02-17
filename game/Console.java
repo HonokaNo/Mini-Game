@@ -1,17 +1,24 @@
 package game;
 
+import java.io.*;
 import java.util.Locale;
 
 import static java.lang.System.err;
+import static java.lang.System.in;
 import static java.lang.System.out;
 
 /**
- * コンソールへの出力を行うユーティリティクラスです。
+ * コンソール関連の処理を行うユーティリティクラスです。
  *
  * @since 0.0.1p
  */
 public final class Console
 {
+	/* 一文字入力に使用するInputStream */
+	private static BufferedInputStream charInput;
+	/* 文字列取得に使用するReader */
+	private static BufferedReader stringInput;
+
 	/* 特定の地域を表す 開発地域が日本なので(笑)日本にしておく */
 	private static Locale defaultLocale = Locale.JAPAN;
 
@@ -165,5 +172,51 @@ public final class Console
 	public static void putcolrgb(String str, int r, int g, int b)
 	{
 		put("\\u001B[38;2;" + r + ";" + g + ";" + b + "m" + str);
+	}
+
+	/**
+	 * 一文字だけ入力された値を取得します。
+	 *
+	 * @return 入力された文字 エラーが発生した場合0(0x30ではなく0x00)
+	 *
+	 * @throws IOException 入出力例外が発生した場合
+	 */
+	public static char getInputChar() throws IOException
+	{
+		/* 入力させる */
+		charInput = new BufferedInputStream(in, 1);
+
+		/* 読み込み */
+		int read = charInput.read();
+
+		/* エラーでない */
+		if(read != -1){
+			/* 読み込めるバイトをすべて読み飛ばす */
+			charInput.skip(charInput.available());
+			return (char)read;
+		}else return (char)0;
+	}
+
+	/**
+	 * 文字列の入力された値を取得します。
+	 * もしかしたら200バイト以上の入力で例外が発生するかもしれません。
+	 *
+	 * @return 入力された文字列 エラーが発生した場合null
+	 *
+	 * @throws IOException 入出力例外が発生した場合
+	 */
+	public static String getInputString() throws IOException
+	{
+		/* 入力させる 基本的にこれ以上入れる人は少ないと思うから200バイト(全角100文字分) */
+		stringInput = new BufferedReader(new InputStreamReader(in), 200);
+
+		/* 読み込み */
+		String read = stringInput.readLine();
+
+		/* エラーでない */
+		if(read != null){
+			/* 読み飛ばしは改行(読み込み開始)までを上で取得しているのでいらない */
+			return read;
+		}else return null;
 	}
 }
