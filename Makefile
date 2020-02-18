@@ -16,6 +16,8 @@ ENCODING = UTF8
 
 build : 
 	make clean
+	make game/Random.class
+	make game/character/player/Player.class
 	make game/ConsEsc.class
 	make game/Console.class
 	make game/Game.class
@@ -26,7 +28,7 @@ run :
 
 javadoc : 
 	$(JAVADOC) -encoding $(ENCODING) -d ..\docs -use -version -nohelp -charset $(ENCODING) -sourcetab 4 -docencoding $(ENCODING) \
-		game
+		game game.character.player
 
 %.class : %.java
 	$(JAVAC) -encoding $(ENCODING) $*.java

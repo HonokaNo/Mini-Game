@@ -3,6 +3,7 @@ package game;
 import java.io.IOException;
 
 import game.ConsEsc;
+import game.character.player.Player;
 
 import static game.Console.*;
 
@@ -13,6 +14,9 @@ import static game.Console.*;
  */
 public final class Game
 {
+	/* 現在ログインしているプレイヤー */
+	private static Player loginedPlayer;
+
 	/**
 	 * このゲームのメイン関数 もちろんここから動作を開始します。
 	 *
@@ -32,29 +36,45 @@ public final class Game
 
 		if(c == '1'){
 			write("名前を入れてください!");
-			String name = read();
-			putf("%s lv.xxがログインしたよ!" + NEWLINE + NEWLINE, name);
-			maintown(name);
+			loginedPlayer = new Player(read());
+			putfn("%s lv.xxがログインしたよ!" + NEWLINE + NEWLINE, loginedPlayer.getName());
+			maintown();
 		/* System.exitだとファイナライザが呼ばれない(らしい)ので */
 		/* あえてreturnで終わらせてみる(意味があるかは知らない) */
 		}else if(c == 'x') return;
 	}
 
-	private static void maintown(String name)
+	private static void maintown()
 	{
+		write("---------------");
 		write("初めの町 住宅街");
-		putll(name + "はどうしようか?");
+		putll(loginedPlayer.getName() + "はどうしようか?");
+		write("1.冒険に外へ行く");
+		write("2.市場に散歩に行く");
+		write("3.自分自身を見つめる");
 		write("x.ゲーム終了");
 		char c = input();
 
-		if(c == 'x'){
+		if(c == '1'){
+			write("今行くのはさすがに危険すぎるからやめておこう。");
+		}else if(c == '2'){
+			/* 市場に散歩に行く */
+			/* アイテムの購入やイベントの発生など */
+			write("しかし自分はお金を持っていなかった。");
+			write("だからどこにも行かず戻ってきた。");
+		}else if(c == '3'){
+			/* 自分自身を見つめる */
+			/* ステータスの表示 */
+			putfn("%s lv.xxx", loginedPlayer.getName());
+		}else if(c == 'x'){
+			/* ゲーム終了 */
 			write("お疲れ様!ゲームを終了します!");
-			write(name + "さんがログアウトしました!");
+			write(loginedPlayer.getName() + "さんがログアウトしました!");
 			return;
-		}else{
-			write("関係ない入力がされました。", ConsEsc.ESC_TRED);
-			maintown(name);
-		}
+		}else error("関係ない入力がされました。");
+
+		write("");
+		maintown();
 	}
 
 	/* ANSIエスケープシーケンスを使用するか */
@@ -109,7 +129,7 @@ public final class Game
 			char c = getInputChar();
 			return c;
 		}catch(IOException ie){
-			write("入出力でエラーが発生しました!", ConsEsc.ESC_TRED);
+			error("入出力でエラーが発生しました!");
 			return (char)0;
 		}
 	}
@@ -128,7 +148,7 @@ public final class Game
 			String s = getInputString();
 			return s;
 		}catch(IOException ie){
-			write("入出力でエラーが発生しました!", ConsEsc.ESC_TRED);
+			error("入出力でエラーが発生しました!");
 			return null;
 		}
 	}

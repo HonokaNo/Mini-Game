@@ -70,7 +70,6 @@ public final class Console
 
 	/**
 	 * 文字列をフォーマットに合わせて出力します。
-	 * 変数の出力等はこちらを使う予定です。
 	 *
 	 * @param str 出力する文字列とそのフォーマット
 	 * @param format 文字列のフォーマットに合わせた引数
@@ -78,6 +77,17 @@ public final class Console
 	public static void putf(String str, Object... format)
 	{
 		out.format(defaultLocale, str, format);
+	}
+
+	/**
+	 * 文字列をフォーマットに合わせ、改行とともに出力します。
+	 *
+	 * @param str 出力する文字列をそのフォーマット
+	 * @param format 文字列のフォーマットに合わせた引数
+	 */
+	public static void putfn(String str, Object... format)
+	{
+		out.format(defaultLocale, str + NEWLINE, format);
 	}
 
 	/**
@@ -199,7 +209,6 @@ public final class Console
 
 	/**
 	 * 文字列の入力された値を取得します。
-	 * もしかしたら200バイト以上の入力で例外が発生するかもしれません。
 	 *
 	 * @return 入力された文字列 エラーが発生した場合null
 	 *
@@ -207,7 +216,8 @@ public final class Console
 	 */
 	public static String getInputString() throws IOException
 	{
-		/* 入力させる 基本的にこれ以上入れる人は少ないと思うから200バイト(全角100文字分) */
+		/* 入力させる 特にこれ以上入れないだろうという200を指定したが */
+		/* それ以上文字を入れてもわずかに時間がかかるだけだと思う */
 		stringInput = new BufferedReader(new InputStreamReader(in), 200);
 
 		/* 読み込み */
