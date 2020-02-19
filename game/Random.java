@@ -51,4 +51,17 @@ public final class Random
 		r = r.mod(BigInteger.valueOf(limit));
 		return r.longValue();
 	}
+
+	/**
+	 * 1から100までの乱数を生成します。
+	 *
+	 * @return 1から100までの乱数の値
+	 */
+	public static long _rand()
+	{
+		long val = rand(1000000);
+		/* 0から99までになる */
+		double d = Math.ceil(val / 10000);
+		return (long)d + 1;
+	}
 }

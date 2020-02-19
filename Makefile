@@ -15,15 +15,19 @@ MAKE  = make
 ENCODING = UTF8
 
 build : 
-	make clean
+#	make clean
 	make game/Random.class
+	make game/item/Item.class
+	make game/item/weapon/Weapon.class
+	make game/item/weapon/None.class
+	make game/item/weapon/sword/Sword.class
 	make game/character/player/Player.class
 	make game/ConsEsc.class
 	make game/Console.class
 	make game/Game.class
 
 run :
-	make build
+#	make build
 	$(JAVA) game.Game
 
 javadoc : 

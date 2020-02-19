@@ -3,6 +3,7 @@ package game;
 import java.io.IOException;
 
 import game.ConsEsc;
+import game.character.Status;
 import game.character.player.Player;
 
 import static game.Console.*;
@@ -46,8 +47,7 @@ public final class Game
 
 	private static void maintown()
 	{
-		write("---------------");
-		write("初めの町 住宅街");
+		write("---初めの町 住宅街---");
 		putll(loginedPlayer.getName() + "はどうしようか?");
 		write("1.冒険に外へ行く");
 		write("2.市場に散歩に行く");
@@ -62,10 +62,24 @@ public final class Game
 			/* アイテムの購入やイベントの発生など */
 			write("しかし自分はお金を持っていなかった。");
 			write("だからどこにも行かず戻ってきた。");
+			game.item.weapon.sword.Sword s = new game.item.weapon.sword.Sword();
+			s.use(loginedPlayer);
 		}else if(c == '3'){
+			Status st = loginedPlayer.getStatus();
 			/* 自分自身を見つめる */
 			/* ステータスの表示 */
-			putfn("%s lv.xxx", loginedPlayer.getName());
+			putfn("%s lv.%d", loginedPlayer.getName(), st.lv);
+			putfn("HP:%d/%d", st.hp, st.mhp);
+			putfn("AP:%d", st.ap);
+			putfn("BP:%d", st.bp);
+			putfn("SP:%d", st.sp);
+			putfn("MAP:%d", st.map);
+			putfn("MBP:%d", st.mbp);
+			putfn("MP:%d/%d", st.mp, st.mmp);
+			putfn("money:$%8d", loginedPlayer.getMoney());
+			write("");
+			/* もし武器をつけてないなら"つけてないよ"と表示 */
+			putfn("weapon:%s", loginedPlayer.getWeapon() == null ? "つけてないよ" : loginedPlayer.getWeapon().getName());
 		}else if(c == 'x'){
 			/* ゲーム終了 */
 			write("お疲れ様!ゲームを終了します!");
@@ -146,7 +160,11 @@ public final class Game
 	{
 		try{
 			String s = getInputString();
-			return s;
+			if(s.length() > 0) return s;
+			else{
+				error("文字が入力されていません。");
+				return read();
+			}
 		}catch(IOException ie){
 			error("入出力でエラーが発生しました!");
 			return null;
