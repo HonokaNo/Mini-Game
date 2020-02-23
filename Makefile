@@ -18,9 +18,20 @@ build :
 #	make clean
 	make game/Random.class
 	make game/item/Item.class
+	make game/item/weapon/WeaponType.class
 	make game/item/weapon/Weapon.class
 	make game/item/weapon/None.class
+	make game/item/weapon/axe/Axe.class
+	make game/item/weapon/gloves/Glove.class
+	make game/item/weapon/knife/Knife.class
+	make game/item/weapon/longsword/LongSword.class
+	make game/item/weapon/scythe/Scythe.class
+	make game/item/weapon/spear/Spear.class
 	make game/item/weapon/sword/Sword.class
+	make game/character/Status.class
+	make game/character/Mob.class
+	make game/character/enemy/Enemy.class
+	make game/character/enemy/slime/Slime.class
 	make game/character/player/Player.class
 	make game/ConsEsc.class
 	make game/Console.class
@@ -32,7 +43,9 @@ run :
 
 javadoc : 
 	$(JAVADOC) -encoding $(ENCODING) -d ..\docs -use -version -nohelp -charset $(ENCODING) -sourcetab 4 -docencoding $(ENCODING) \
-		game game.character.player
+		game game.character game.character.player game.item game.item.weapon \
+		game.item.weapon.axe game.item.weapon.gloves game.item.weapon.knife game.item.weapon.longsword \
+		game.item.weapon.scythe game.item.weapon.spear game.item.weapon.sword
 
 %.class : %.java
 	$(JAVAC) -encoding $(ENCODING) $*.java

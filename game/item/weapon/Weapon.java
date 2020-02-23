@@ -25,6 +25,15 @@ public abstract class Weapon extends Item
 	/* 武器の能力 */
 	protected Status st = new Status();
 
+	/* 武器の能力のフラグ */
+	/* 0:全体攻撃可能 */
+	/* 1:ガードブレイク */
+	/* 2:即死 */
+	protected boolean[] flags = new boolean[32];
+
+	/* 武器の種別 */
+	protected WeaponType type;
+
 	/**
 	 * この武器の能力を返します。
 	 *
@@ -33,6 +42,26 @@ public abstract class Weapon extends Item
 	public final Status getStatus()
 	{
 		return st;
+	}
+
+	/**
+	 * 武器のステータスフラグを返します。
+	 *
+	 * @return 武器にセットされたフラグ
+	 */
+	public final boolean[] getFlags()
+	{
+		return flags;
+	}
+
+	/**
+	 * 武器の種別を返します。
+	 *
+	 * @return 武器のタイプ
+	 */
+	public final WeaponType getType()
+	{
+		return type;
 	}
 
 	@Override public final void use(Player p)

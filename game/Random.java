@@ -6,12 +6,12 @@ import java.math.BigInteger;
  * javaとは違う方法で生成する乱数のクラスです。
  * なお、実装についてはwikipediaを参照してください
  * <a href=https://ja.wikipedia.org/wiki/Xorshift target="_blank">Wikipedia:Xorshift</a>
+ *
+ * @version 0.0.1p
  */
 public final class Random
 {
-	/* このシードの設定が肝 */
-	private static long seed = 8_8172_6454_6332_5252L;
-	/* シードは変えておいてどちらか気分や環境で選んでください */
+	/* 乱数の種 */
 	private static BigInteger bigseed = BigInteger.valueOf(2_5252_3364_5462_7188L);
 
 	/**
@@ -48,8 +48,8 @@ public final class Random
 	public static long rand(long limit)
 	{
 		BigInteger r = bigrand();
-		r = r.mod(BigInteger.valueOf(limit));
-		return r.longValue();
+		BigInteger s = r.mod(BigInteger.valueOf(limit));
+		return s.longValue();
 	}
 
 	/**

@@ -15,7 +15,7 @@ public class None extends Weapon
 	public None()
 	{
 		name = "何も装備してないよ";
-		description = "何もつけてない";
+		description = new String[]{"何もつけてない"};
 		st = new Status();
 	}
 }

@@ -3,9 +3,11 @@ package game;
 import java.io.IOException;
 
 import game.ConsEsc;
+import game.character.Mob;
 import game.character.Status;
 import game.character.player.Player;
 
+import static game.Battle.*;
 import static game.Console.*;
 
 /**
@@ -38,7 +40,7 @@ public final class Game
 		if(c == '1'){
 			write("名前を入れてください!");
 			loginedPlayer = new Player(read());
-			putfn("%s lv.xxがログインしたよ!" + NEWLINE + NEWLINE, loginedPlayer.getName());
+			putfn("%s lv.%dがログインしたよ!" + NEWLINE + NEWLINE, loginedPlayer.getName(), loginedPlayer.getStatus().lv);
 			maintown();
 		/* System.exitだとファイナライザが呼ばれない(らしい)ので */
 		/* あえてreturnで終わらせてみる(意味があるかは知らない) */
@@ -56,19 +58,25 @@ public final class Game
 		char c = input();
 
 		if(c == '1'){
-			write("今行くのはさすがに危険すぎるからやめておこう。");
+//			write("今行くのはさすがに危険すぎるからやめておこう。");
+			battleInit(new Mob[]{loginedPlayer}, new Mob[]{new game.character.enemy.slime.Slime()});
 		}else if(c == '2'){
 			/* 市場に散歩に行く */
 			/* アイテムの購入やイベントの発生など */
-			write("しかし自分はお金を持っていなかった。");
-			write("だからどこにも行かず戻ってきた。");
-			game.item.weapon.sword.Sword s = new game.item.weapon.sword.Sword();
-			s.use(loginedPlayer);
+			write("どこに行こう?");
+			write("1.武器屋さん");
+			write("x.街に戻る");
+			c = input();
+
+			if(c == '1'){
+			}else if(c == 'x') write("町に戻ろう。");
 		}else if(c == '3'){
 			Status st = loginedPlayer.getStatus();
 			/* 自分自身を見つめる */
 			/* ステータスの表示 */
+			write("-------------------------");
 			putfn("%s lv.%d", loginedPlayer.getName(), st.lv);
+			write("-------------------------");
 			putfn("HP:%d/%d", st.hp, st.mhp);
 			putfn("AP:%d", st.ap);
 			putfn("BP:%d", st.bp);
@@ -77,6 +85,7 @@ public final class Game
 			putfn("MBP:%d", st.mbp);
 			putfn("MP:%d/%d", st.mp, st.mmp);
 			putfn("money:$%8d", loginedPlayer.getMoney());
+			write("-------------------------");
 			write("");
 			/* もし武器をつけてないなら"つけてないよ"と表示 */
 			putfn("weapon:%s", loginedPlayer.getWeapon() == null ? "つけてないよ" : loginedPlayer.getWeapon().getName());
@@ -141,10 +150,15 @@ public final class Game
 	{
 		try{
 			char c = getInputChar();
+			if(c == (char)0){
+				error("エラーが出たのでもう一度入力してください...");
+				return input();
+			}
 			return c;
 		}catch(IOException ie){
 			error("入出力でエラーが発生しました!");
-			return (char)0;
+			error("もう一度入力してください。");
+			return input();
 		}
 	}
 
@@ -167,7 +181,9 @@ public final class Game
 			}
 		}catch(IOException ie){
 			error("入出力でエラーが発生しました!");
-			return null;
+			error("もう一度入力してみてください。");
+			error("繰り返される場合いったんゲームを終了しましょう。");
+			return read();
 		}
 	}
 }

@@ -17,7 +17,7 @@ public abstract class Item
 	/**
 	 * アイテムの説明
 	 */
-	protected String description;
+	protected String[] description = new String[3];
 
 	/**
 	 * 使用した際アイテムは消えてなくなるか
@@ -39,7 +39,7 @@ public abstract class Item
 	 *
 	 * @return このアイテムの説明文
 	 */
-	public final String getDescription()
+	public final String[] getDescription()
 	{
 		return description;
 	}

@@ -2,6 +2,8 @@ package game.character;
 
 /**
  * キャラクターの体力や魔力などを管理するクラスです。
+ *
+ * @version 0.0.1p
  */
 public class Status implements Cloneable
 {
@@ -49,6 +51,7 @@ public class Status implements Cloneable
 	 * 回避率
 	 */
 	public long avoid;
+
 	/**
 	 * 逃げられる確率
 	 */

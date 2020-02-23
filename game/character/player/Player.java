@@ -1,8 +1,10 @@
 package game.character.player;
 
-import game.character.Status;
-import game.item.weapon.Weapon;
-import game.item.weapon.None;
+import game.character.*;
+import game.item.weapon.*;
+
+import static game.Console.*;
+import static game.Game.*;
 
 /**
  * プレイヤーの分身として、ゲーム内で活動する
@@ -10,30 +12,27 @@ import game.item.weapon.None;
  *
  * @version 0.0.1p
  */
-public class Player
+public class Player extends Mob
 {
-	/* プレイヤーの名前 */
-	private String name;
+	/* ステータスとして付与できるポイント */
+	private long point;
 
-	/* プレイヤーの能力 */
-	private Status status;
-
-	/* 現在のお金 */
+	/**
+	 * 現在のお金
+	 */
 	private long money;
 
 	/* プレイヤーの装備している武器 装備していない場合null */
 	private Weapon weapon = new None();
 
 	/* ステータスの初期化 */
-	private void statusInit()
+	@Override protected void statusInit()
 	{
-		status = new Status();
 		status.mhp = 10;
-		status.hp = status.mhp;
 		status.ap = status.bp = status.sp = 2;
 		status.map = status.mbp = 2;
 		status.mmp = 1;
-		status.mp = status.mmp;
+		status.flee = 0;
 	}
 
 	/**
@@ -50,17 +49,7 @@ public class Player
 	}
 
 	/**
-	 * プレイヤーの名前を返します。
-	 *
-	 * @return プレイヤーを識別する名前
-	 */
-	public String getName()
-	{
-		return name;
-	}
-
-	/**
-	 * プレイヤーの所持金を返します。
+	 * Mobの所持金を返します。
 	 *
 	 * @return 所持金
 	 */
@@ -84,19 +73,9 @@ public class Player
 	 *
 	 * @param m 減少させる金額
 	 */
-	public void subMOney(long m)
+	public void subMoney(long m)
 	{
 		money -= m;
-	}
-
-	/**
-	 * プレイヤーの能力を取得します。
-	 *
-	 * @return プレイヤーの現在のステータス
-	 */
-	public Status getStatus()
-	{
-		return status;
 	}
 
 	/**
@@ -131,6 +110,38 @@ public class Player
 		if(weapon != null && !(weapon instanceof None)){
 			status.sub(weapon.getStatus());
 			weapon = new None();
+		}
+	}
+
+	/* 攻撃処理 */
+	private void attack(Mob a, Mob[] d)
+	{
+		/* 全体攻撃 */
+		for(Mob mob : d) powerAttack(this, mob, 0);
+	}
+
+	@Override public void command(Mob[] m, Mob[] n)
+	{
+		putll(getName() + "はどうする?");
+
+		putl("1.敵に攻撃");
+		putl("2.防御を構える");
+		putl("3.魔法を詠唱");
+		putl("4.アイテムを使用");
+		putl("5.まずいので逃げ出す");
+		char c = input();
+
+		if(c == '1') attack(this, n);
+		else if(c == '2') defence();
+		else if(c == '3'){
+			putl("魔法を覚えていない...");
+		}else if(c == '4'){
+			putl("アイテムを持っていない...");
+			putl("そこらの小石でも投げてやった...");
+			putl("ダメージは全くなさそうだ... むしろ怒ってる?");
+		}else if(c == '5'){
+			flee();
+			if(isFlee()) putl(getName() + "は戦闘から逃げ出せた!");
 		}
 	}
 }
