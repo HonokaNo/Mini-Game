@@ -6,6 +6,17 @@ import game.ConsEsc;
 import game.character.Mob;
 import game.character.Status;
 import game.character.player.Player;
+import game.item.Item;
+import game.item.ItemManager;
+import game.item.Items;
+import game.item.weapon.Weapon;
+import game.item.weapon.axe.Axe;
+import game.item.weapon.gloves.Glove;
+import game.item.weapon.knife.Knife;
+import game.item.weapon.longsword.LongSword;
+import game.item.weapon.scythe.Scythe;
+import game.item.weapon.spear.Spear;
+import game.item.weapon.sword.Sword;
 
 import static game.Battle.*;
 import static game.Console.*;
@@ -17,8 +28,14 @@ import static game.Console.*;
  */
 public final class Game
 {
+	/**
+	 * この環境で使用する矢印マーク
+	 * 前に要望があったので設定
+	 */
+	public static final String ARROW = "->";
+
 	/* 現在ログインしているプレイヤー */
-	private static Player loginedPlayer;
+	static Player loginedPlayer;
 
 	/**
 	 * このゲームのメイン関数 もちろんここから動作を開始します。
@@ -33,17 +50,28 @@ public final class Game
 		putll("---------------");
 
 		write("1.セーブデータを作る/開く");
+//		write("2.せーぶでーたを読み込む");
 		write("x.終了する");
 
 		char c = input();
 
 		if(c == '1'){
-			write("名前を入れてください!");
-			loginedPlayer = new Player(read());
+			if(!SaveData.read()){
+				write("名前を入れてください!");
+				loginedPlayer = new Player(read());
+				putfn("まずはステータスを振ってみよう!");
+				loginedPlayer.pointed();
+			}
 			putfn("%s lv.%dがログインしたよ!" + NEWLINE + NEWLINE, loginedPlayer.getName(), loginedPlayer.getStatus().lv);
+			write("");
 			maintown();
+//		}else if(c == '2'){
+//			SaveData.read();
+//			write("");
+//			maintown();
 		/* System.exitだとファイナライザが呼ばれない(らしい)ので */
 		/* あえてreturnで終わらせてみる(意味があるかは知らない) */
+		/* 結局exitを別の場所で呼び出したのでたぶん意味はない(笑) */
 		}else if(c == 'x') return;
 	}
 
@@ -54,28 +82,81 @@ public final class Game
 		write("1.冒険に外へ行く");
 		write("2.市場に散歩に行く");
 		write("3.自分自身を見つめる");
+		write("4.ステータスを振る");
+		write("5.アイテムの確認/使用");
+		write("6.セーブしてみる");
 		write("x.ゲーム終了");
 		char c = input();
 
 		if(c == '1'){
-//			write("今行くのはさすがに危険すぎるからやめておこう。");
 			battleInit(new Mob[]{loginedPlayer}, new Mob[]{new game.character.enemy.slime.Slime()});
 		}else if(c == '2'){
 			/* 市場に散歩に行く */
 			/* アイテムの購入やイベントの発生など */
 			write("どこに行こう?");
 			write("1.武器屋さん");
+			write("2.宿屋");
 			write("x.街に戻る");
 			c = input();
 
 			if(c == '1'){
-			}else if(c == 'x') write("町に戻ろう。");
+				write("いらっしゃいなのだ。");
+				Sword sword = new Sword();
+				Knife knife = new Knife();
+				LongSword longsword = new LongSword();
+				Spear spear = new Spear();
+				Axe axe = new Axe();
+				Glove glove = new Glove();
+				Scythe scythe = new Scythe();
+				putfn("1.%s $6", sword.getName());
+				putfn("%s", sword.getDescription()[0]);
+				putfn("2.%s $6", knife.getName());
+				putfn("%s", knife.getDescription()[0]);
+				putfn("3.%s $6", longsword.getName());
+				putfn("%s", longsword.getDescription()[0]);
+				putfn("4.%s $6", spear.getName());
+				putfn("%s", spear.getDescription()[0]);
+				putfn("5.%s $6", axe.getName());
+				putfn("%s", axe.getDescription()[0]);
+				putfn("6.%s $6", glove.getName());
+				putfn("%s", glove.getDescription()[0]);
+				putfn("7.%s $6", scythe.getName());
+				putfn("%s", scythe.getDescription()[0]);
+				write("x.帰る");
+				c = input();
+
+				String msg = "お金が足りないみてぇだぞ";
+				if(c == '1') buyItem(5, sword, msg);
+				else if(c == '2') buyItem(6, knife, msg);
+				else if(c == '3') buyItem(6, longsword, msg);
+				else if(c == '4') buyItem(6, spear, msg);
+				else if(c == '5') buyItem(6, axe, msg);
+				else if(c == '6') buyItem(6, glove, msg);
+				else if(c == '7') buyItem(6, scythe, msg);
+				else write("また来てなのだ。");
+			}else if(c == '2'){
+				write("ここは宿屋です。");
+				write("回復するには$8必要です。");
+				write("回復しますか?");
+				write("1.する");
+				write("x.しない");
+				c = input();
+
+				if(c == '1'){
+					if(loginedPlayer.getMoney() >= 8){
+						write("体力が完全回復した!");
+						loginedPlayer.maxheal();
+						loginedPlayer.subMoney(8);
+					}else write("無銭宿泊はだめですよ!");
+				}else write("やっぱりやめよう。");
+			}else if(c == 'x') putfn("町に戻ろう。%s", NEWLINE);
 		}else if(c == '3'){
 			Status st = loginedPlayer.getStatus();
 			/* 自分自身を見つめる */
 			/* ステータスの表示 */
 			write("-------------------------");
 			putfn("%s lv.%d", loginedPlayer.getName(), st.lv);
+			putfn("status point:%d", loginedPlayer.getPoint());
 			write("-------------------------");
 			putfn("HP:%d/%d", st.hp, st.mhp);
 			putfn("AP:%d", st.ap);
@@ -84,13 +165,56 @@ public final class Game
 			putfn("MAP:%d", st.map);
 			putfn("MBP:%d", st.mbp);
 			putfn("MP:%d/%d", st.mp, st.mmp);
+			putfn("AVOID:%d%%", st.avoid);
+			putfn("EXP:%d/%d", loginedPlayer.getNowExp(), loginedPlayer.getNextExp());
 			putfn("money:$%8d", loginedPlayer.getMoney());
 			write("-------------------------");
-			write("");
-			/* もし武器をつけてないなら"つけてないよ"と表示 */
 			putfn("weapon:%s", loginedPlayer.getWeapon() == null ? "つけてないよ" : loginedPlayer.getWeapon().getName());
+			write("-------------------------");
+		}else if(c == '4') loginedPlayer.pointed();
+		else if(c == '5'){
+			Items[] item = ItemManager.getItems();
+			if(item != null){
+				clear(useAnsi);
+				int pos = 0, spos = 1;
+				int end = (pos + 10) > item.length ? item.length : (pos + 10);
+				for(int l = pos; l < end; l++, spos++){
+					putfn("%d.%s x%d", spos, item[l].getItem().getName(), item[l].getNumber());
+					putfn("%s", item[l].getItem().getDescription()[0]);
+				}
+				if(end != item.length) write("n.次へ");
+				if(pos != 0) write("b.戻る");
+				write("x.やめる");
+				c = input();
+
+				if(c >= '1' && c <= '9'){
+					/* どれを押したかの番号を取得 0-8 */
+					int input = (int)(c - '1');
+					int ipos = pos + input;
+					if(ipos >= item.length) write("そんなアイテムは存在しません。");
+					else{
+						putfn("%s x%d", item[ipos].getItem().getName(), item[ipos].getNumber());
+						for(String s : item[ipos].getItem().getDescription()) putfn("%s", s);
+						putfn("%s1.使う", NEWLINE);
+						putfn("x.戻る");
+						c = input();
+						if(c == '1') item[ipos].getItem().use(loginedPlayer);
+
+						maintown();
+					}
+				}else if(c == 'n'){
+					if(end != item.length) pos += 6;
+				}else if(c == 'b'){
+					if(pos != 0) pos -= 6;
+				}else write("アイテムを使うのをやめた。");
+			}else write("アイテムを持っていなかった。");
+		}else if(c == '6'){
+			write("セーブします!");
+			SaveData.write();
+			write("セーブ完了!");
 		}else if(c == 'x'){
 			/* ゲーム終了 */
+			SaveData.write();
 			write("お疲れ様!ゲームを終了します!");
 			write(loginedPlayer.getName() + "さんがログアウトしました!");
 			return;
@@ -175,15 +299,30 @@ public final class Game
 		try{
 			String s = getInputString();
 			if(s.length() > 0) return s;
-			else{
-				error("文字が入力されていません。");
-				return read();
-			}
+			else return read();
 		}catch(IOException ie){
 			error("入出力でエラーが発生しました!");
 			error("もう一度入力してみてください。");
 			error("繰り返される場合いったんゲームを終了しましょう。");
 			return read();
+		}
+	}
+
+	public static void buyItem(long money, Item item, String msg)
+	{
+		write("いくつ買おう?");
+		long num = Long.parseLong(read());
+		if(num > 0){
+			if(loginedPlayer.getMoney() >= money * num){
+				loginedPlayer.giveItem(item, num);
+				loginedPlayer.subMoney(money);
+				if(item instanceof Weapon){
+					write("装備しちゃう?(y/n)");
+					char c = input();
+
+					if(c == 'y') item.use(loginedPlayer);
+				}
+			}else write(msg);
 		}
 	}
 }

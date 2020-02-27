@@ -1,6 +1,7 @@
 package game;
 
 import game.character.Mob;
+import game.character.enemy.Enemy;
 import game.character.player.Player;
 
 import static game.Game.*;
@@ -42,6 +43,10 @@ public final class Battle
 		int left = 0, right = mobs.length - 1;
 		mobsort(mobs, left, right);
 
+		int death = 0;
+
+		/* mobsortでは素早さが遅いほうから並べられるので */
+		/* 最後から読みだして速い順にしている */
 		for(int l = mobs.length - 1; l >= 0; l--){
 			if(!mobs[l].isFlee() && !mobs[l].isDeath()){
 				mobs[l].command(p, e);
@@ -50,17 +55,41 @@ public final class Battle
 
 			/* 逃げられたので関数から抜ける */
 			if(mobs[l] instanceof Player && mobs[l].isFlee()) return;
-		}
 
-		int death = 0;
-		for(; death < e.length; death++){
-			if(!e[death].isFlee() && !e[death].isDeath()) break;
-		}
-		/* 全ての敵を倒した */
-		if(death == e.length){
-			putl("すべての敵を倒した!");
+			for(death = 0; death < p.length; death++) if(!p[death].isDeath()) break;
+			if(death == p.length){
+				putl("負けてしまった.....");
+				putl("強制ログアウトします。");
+				System.exit(0);
+			}
 
-			return;
+			for(death = 0; death < e.length; death++){
+				if(!e[death].isFlee() && !e[death].isDeath()) break;
+			}
+
+			/* 全ての敵を倒した */
+			if(death == e.length){
+				putl("すべての敵を倒した!");
+
+				long exp = 0;
+				long money = 0;
+				for(Mob enemy : e){
+					if(!enemy.isFlee() && enemy instanceof Enemy){
+						exp += ((Enemy)enemy).getSendExp();
+						money += ((Enemy)enemy).getSendMoney();
+					}
+				}
+				for(Mob player : p){
+					if(player instanceof Player){
+						putfn("%sは%dexp手に入れた!", player.getName(), exp);
+						((Player)player).addExp(exp);
+						putfn("%sは$%d手に入れた!", player.getName(), money);
+						((Player)player).addMoney(money);
+					}
+				}
+
+				return;
+			}
 		}
 
 		battleLoop(p, e);

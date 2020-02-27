@@ -16,5 +16,6 @@ public class LongSword extends Weapon
 		flags[0] = true;
 
 		type = WeaponType.WEAPON_LONGSWORD;
+		num = 4;
 	}
 }

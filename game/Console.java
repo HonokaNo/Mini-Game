@@ -14,8 +14,8 @@ import static java.lang.System.out;
  */
 public final class Console
 {
-	/* 一文字入力に使用するInputStream */
-	private static BufferedInputStream charInput;
+	/* 一文字入力に使用するReader */
+	private static BufferedReader charInput;
 	/* 文字列取得に使用するReader */
 	private static BufferedReader stringInput;
 
@@ -166,16 +166,15 @@ public final class Console
 	public static char getInputChar() throws IOException
 	{
 		/* 入力させる */
-		charInput = new BufferedInputStream(in, 1);
+		charInput = new BufferedReader(new InputStreamReader(in), 1);
 
 		/* 読み込み */
-		int read = charInput.read();
+		String read = charInput.readLine();
 
 		/* エラーでない */
-		if(read != -1){
-			/* 読み込めるバイトをすべて読み飛ばす */
-			charInput.skip(charInput.available());
-			return (char)read;
+		if(read != null){
+			/* 初めの一文字を取得 */
+			return read.charAt(0);
 		}else return (char)0;
 	}
 
@@ -200,5 +199,39 @@ public final class Console
 			/* 読み飛ばしは改行(読み込み開始)までを上で取得しているのでいらない */
 			return read;
 		}else return null;
+	}
+
+	/**
+	 * 画面をANSIエスケープシーケンスを用いてクリアします。
+	 * windowsでは引数を変更することでwindows用の消去法を行います。
+	 * 参考:https://qiita.com/Bim/items/c0b5ab527d105bc63d6b ありがとうございます!
+	 *
+	 * @param ansi ANSIエスケープシーケンスを用いて消去するか windowsならfalseにすることで確実にクリアできます。
+	 */
+	public static void clear(boolean ansi)
+	{
+		/* ANSIエスケープシーケンスでクリア */
+		if(ansi) putf("%s", "\\u001B[2J");
+		/* 改行を出力 */
+		else{
+			try{
+				new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+			}catch(IOException ie){
+				error("クリアに失敗しました!");
+			}catch(InterruptedException ine){
+				error("クリアに失敗しました!");
+			}
+		}
+	}
+
+	/**
+	 * バッファをリセットします。
+	 *
+	 * @throws IOException 入出力例外が発生した場合
+	 */
+	public static void reset() throws IOException
+	{
+		charInput.reset();
+		stringInput.reset();
 	}
 }

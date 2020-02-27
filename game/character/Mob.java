@@ -144,6 +144,15 @@ public abstract class Mob
 	}
 
 	/**
+	 * 体力、魔力をすべて回復します。
+	 */
+	public void maxheal()
+	{
+		getStatus().hp = getStatus().mhp;
+		getStatus().mp = getStatus().mmp;
+	}
+
+	/**
 	 * そのMobがすでに倒れているかを返します。
 	 *
 	 * @return 体力が0以下の場合true
@@ -162,6 +171,7 @@ public abstract class Mob
 	 */
 	public void powerAttack(Mob a, Mob b, long limit)
 	{
+		putfn("%sの攻撃!", a.getName());
 		if(b.isDefence()) b.getStatus().bp *= 2;
 
 		double base = (a.getStatus().ap - b.getStatus().bp) + (a.getStatus().lv - (a.getStatus().lv - b.getStatus().lv));
@@ -171,9 +181,9 @@ public abstract class Mob
 		if(damage < limit) damage = limit;
 
 		long avoid = Random._rand();
-		if(status.avoid >= avoid) putl(b.getName() + "は攻撃を回避した!");
+		if(status.avoid >= avoid) putf("%sは攻撃を回避した!", b.getName());
 		else{
-			putl(b.getName() + "は" + damage + "ダメージ受けた!");
+			putf("%sは%dダメージ受けた!", b.getName(), damage);
 			b.damage(damage);
 		}
 

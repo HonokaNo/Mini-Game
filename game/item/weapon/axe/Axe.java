@@ -17,5 +17,6 @@ public class Axe extends Weapon
 		flags[1] = true;
 
 		type = WeaponType.WEAPON_AXE;
+		num = 1;
 	}
 }
