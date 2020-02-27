@@ -1,0 +1,15 @@
+body{
+	color:white;
+	background-color:black;
+}
+
+h1{
+	color:red;
+	background-color:black;
+}
+
+p{
+	color:white;
+	background-color:silver;
+	font-size:25px;
+}

@@ -30,7 +30,7 @@ public class Items
 	 * 複数同一アイテムを持ったItemsを生成します。
 	 *
 	 * @param i 所持しているアイテム
-	 * @param num 所持しているアイテム
+	 * @param n 所持しているアイテムの個数
 	 */
 	public Items(Item i, long n)
 	{

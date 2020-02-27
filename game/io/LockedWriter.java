@@ -11,7 +11,7 @@ import java.io.*;
 public class LockedWriter extends BufferedWriter
 {
 	/* Readerと同じでないといけない */
-	private static final byte[] KEY = {(byte)43, (byte)102, (byte)20};
+	private static final byte[] KEY = {(byte)43};
 
 	public LockedWriter(Writer out)
 	{
@@ -20,9 +20,12 @@ public class LockedWriter extends BufferedWriter
 
 	@Override public void write(char[] cbuf, int off, int len) throws IOException
 	{
+		int data = 0;
 		for(int l = 0; l < cbuf.length; l++){
 			for(int m = 0; m < KEY.length; m++){
-				cbuf[l] ^= KEY[m];
+				data = (int)cbuf[l];
+				data ^= KEY[m];
+				write(data);
 			}
 		}
 		super.write(cbuf, off, len);

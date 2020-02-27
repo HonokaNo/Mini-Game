@@ -11,7 +11,7 @@ import java.io.*;
 public class LockedOutputStream extends BufferedOutputStream
 {
 	/* InputStreamと同じでないといけない */
-				private static final byte[] KEY = {(byte)100, (byte)230, (byte)36};
+	private static final byte[] KEY = {(byte)36};
 
 	public LockedOutputStream(OutputStream out)
 	{

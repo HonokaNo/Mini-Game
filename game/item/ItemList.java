@@ -1,5 +1,6 @@
 package game.item;
 
+import game.item.weapon.None;
 import game.item.weapon.axe.*;
 import game.item.weapon.gloves.*;
 import game.item.weapon.knife.*;
@@ -22,7 +23,7 @@ final class ItemList
 	 * 初めの剣:7
 	 */
 	static Item[] itemlist = {
-		null,
+		new None(),
 		new Axe(),
 		new Glove(),
 		new Knife(),

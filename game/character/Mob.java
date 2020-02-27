@@ -76,7 +76,7 @@ public abstract class Mob
 	 * Mobの行動を実装します。
 	 *
 	 * @param m プレイヤー及びその味方キャラ
-	 * @oaram n 敵として主に戦うキャラ
+	 * @param n 敵として主に戦うキャラ
 	 */
 	public abstract void command(Mob[] m, Mob[] n);
 

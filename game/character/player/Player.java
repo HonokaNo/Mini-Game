@@ -110,7 +110,7 @@ public class Player extends Mob
 	 */
 	public void addWeapon(Weapon w)
 	{
-		if(w != null){
+		if(weapon != null && !(weapon instanceof None)){
 			status.add(w.getStatus());
 			weapon = w;
 		}
@@ -416,7 +416,7 @@ public class Player extends Mob
 
 	public void s_writename(LockedWriter bw) throws IOException
 	{
-		bw.write(name, 0, name.length());
+		bw.write(name.toCharArray(), 0, name.length());
 	}
 
 	public void s_read(LockedInputStream fis) throws IOException
@@ -449,6 +449,14 @@ public class Player extends Mob
 		money = Bytes2Long(bytes);
 		fis.read(bytes, 0, 8);
 		weapon = (Weapon)ItemManager.getItem((int)Bytes2Long(bytes));
+
+		for(int l = 0; l < status_lv.length; l++){
+			for(int m = 0; m < status_lv[l].length; m++){
+				fis.read(bytes, 0, 8);
+				status_lv[l][m] = Bytes2Long(bytes);
+			}
+		}
+
 		fis.read(bytes, 0, 8);
 		nowexp = Bytes2Long(bytes);
 		fis.read(bytes, 0, 8);
@@ -458,7 +466,6 @@ public class Player extends Mob
 
 		fis.read(bytes, 0, 8);
 		int len = (int)Bytes2Long(bytes);
-		putfn("len:%d", len);
 		s_readname(len);
 
 		fis.read(bytes, 0, 8);

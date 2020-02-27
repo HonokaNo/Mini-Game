@@ -11,7 +11,7 @@ import java.io.*;
 public class LockedReader extends BufferedReader
 {
 	/* Writerと同じでないといけない */
-	private static final byte[] KEY = {(byte)43, (byte)102, (byte)20};
+	private static final byte[] KEY = {(byte)43};
 
 	public LockedReader(Reader in)
 	{
@@ -21,9 +21,12 @@ public class LockedReader extends BufferedReader
 	@Override public int read(char[] cbuf, int off, int len) throws IOException
 	{
 		int read = super.read(cbuf, off, len);
-		for(int l = 0; l < cbuf.length; l++){
+		int[] array = new int[cbuf.length];
+		for(int l = 0; l < array.length; l++){
 			for(int m = 0; m < KEY.length; m++){
-				cbuf[l] ^= KEY[m];
+				array[l] = (int)cbuf[l];
+				array[l] ^= KEY[m];
+				cbuf[l] = (char)array[l];
 			}
 		}
 		return read;
