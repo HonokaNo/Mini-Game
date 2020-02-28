@@ -1,6 +1,7 @@
 package game.character;
 
 import game.Random;
+import game.character.player.Player;
 
 import static game.Console.*;
 
@@ -173,6 +174,11 @@ public abstract class Mob
 	{
 		putfn("%sの攻撃!", a.getName());
 		if(b.isDefence()) b.getStatus().bp *= 2;
+		/* ガードブレイク */
+		if(a instanceof Player && ((Player)a).getWeapon().getFlags()[1]){
+			b.defence = false;
+			b.getStatus().bp /= 2;
+		}
 
 		double base = (a.getStatus().ap - b.getStatus().bp) + (a.getStatus().lv - (a.getStatus().lv - b.getStatus().lv));
 		double r = ((double)(Random.rand(51) + 70) / 100);
@@ -180,9 +186,15 @@ public abstract class Mob
 		long damage = (long)base;
 		if(damage < limit) damage = limit;
 
-		long avoid = Random._rand();
-		if(status.avoid >= avoid) putf("%sは攻撃を回避した!", b.getName());
+		if(status.avoid >= Random._rand()) putf("%sは攻撃を回避した!", b.getName());
 		else{
+			/* 即死 */
+			if(a instanceof Player && ((Player)a).getWeapon().getFlags()[2]){
+				if(Random._rand() == 1){
+					damage = b.getStatus().mhp;
+					putl("死神の力が発動した!");
+				}
+			}
 			putf("%sは%dダメージ受けた!", b.getName(), damage);
 			b.damage(damage);
 		}

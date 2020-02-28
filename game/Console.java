@@ -173,6 +173,10 @@ public final class Console
 
 		/* エラーでない */
 		if(read != null){
+			if(read.length() == 0){
+				error("input error:length 0");
+				return getInputChar();
+			}
 			/* 初めの一文字を取得 */
 			return read.charAt(0);
 		}else return (char)0;

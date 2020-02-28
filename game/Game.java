@@ -5,6 +5,7 @@ import java.io.IOException;
 import game.ConsEsc;
 import game.character.Mob;
 import game.character.Status;
+import game.character.enemy.slime.Slime;
 import game.character.player.Player;
 import game.item.Item;
 import game.item.ItemManager;
@@ -50,7 +51,6 @@ public final class Game
 		putll("---------------");
 
 		write("1.セーブデータを作る/開く");
-//		write("2.せーぶでーたを読み込む");
 		write("x.終了する");
 
 		char c = input();
@@ -65,10 +65,6 @@ public final class Game
 			putfn("%s lv.%dがログインしたよ!" + NEWLINE + NEWLINE, loginedPlayer.getName(), loginedPlayer.getStatus().lv);
 			write("");
 			maintown();
-//		}else if(c == '2'){
-//			SaveData.read();
-//			write("");
-//			maintown();
 		/* System.exitだとファイナライザが呼ばれない(らしい)ので */
 		/* あえてreturnで終わらせてみる(意味があるかは知らない) */
 		/* 結局exitを別の場所で呼び出したのでたぶん意味はない(笑) */
@@ -89,7 +85,11 @@ public final class Game
 		char c = input();
 
 		if(c == '1'){
-			battleInit(new Mob[]{loginedPlayer}, new Mob[]{new game.character.enemy.slime.Slime()});
+			long rand = Random._rand();
+			Mob[] enemy;
+			if(rand <= 75) enemy = new Mob[]{new Slime()};
+			else enemy = new Mob[]{new Slime(), new Slime()};
+			battleInit(new Mob[]{loginedPlayer}, enemy);
 		}else if(c == '2'){
 			/* 市場に散歩に行く */
 			/* アイテムの購入やイベントの発生など */
@@ -101,6 +101,7 @@ public final class Game
 
 			if(c == '1'){
 				write("いらっしゃいなのだ。");
+				putfn("現在のお金:$%d", loginedPlayer.getMoney());
 				Sword sword = new Sword();
 				Knife knife = new Knife();
 				LongSword longsword = new LongSword();

@@ -44,7 +44,7 @@ public class Player extends Mob
 		status.ap = status.bp = status.sp = 2;
 		status.map = status.mbp = 2;
 		status.mmp = 1;
-		status.flee = 0;
+		status.flee = 5;
 
 		nextexp = 6;
 	}
@@ -200,7 +200,8 @@ public class Player extends Mob
 		try{
 			putfn("現在のポイント:%d", point);
 			putfn("%sにポイントを振ってレベルアップする?(y/n)", sarray[index]);
-			putfn("必要ポイント:%d 上昇値:%d", status_lv[index][1], status_lv[index][2]);
+			if(index != 7) putfn("必要ポイント:%d 上昇値:%d", status_lv[index][1], status_lv[index][2]);
+			else putfn("必要ポイント:%d 上昇値:%d%%", status_lv[index][1], status_lv[index][2]);
 			char i = input();
 			if(i == 'y'){
 				if(status_lv[index][1] <= point){
@@ -310,7 +311,10 @@ public class Player extends Mob
 			putfn("レベルアップ! %d%s%d", status.lv, ARROW, status.lv + 1);
 			putfn("ポイントを%d手に入れた!", p);
 			status.lv++;
-			pointed();
+			putl("ポイントを振ってみる?");
+			putl("1.しない");
+			putl("2.する!");
+			if(input() == '2') pointed();
 
 			nowexp -= nextexp;
 			long a = status.lv + status.lv * 3;

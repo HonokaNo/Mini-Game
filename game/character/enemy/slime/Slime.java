@@ -12,12 +12,12 @@ public class Slime extends Enemy
 		name = "スライム";
 
 		status.lv = 1;
-		status.mhp = 7;
+		status.mhp = 8;
 		status.ap = 4;
-		status.bp = 3;
-		status.map = 3;
-		status.mbp = 2;
-		status.sp = 2;
+		status.bp = 4;
+		status.map = 4;
+		status.mbp = 4;
+		status.sp = 3;
 		status.mmp = 1;
 
 		sendexp = 1;
