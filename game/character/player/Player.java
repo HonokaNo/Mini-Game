@@ -350,7 +350,7 @@ public class Player extends Mob
 			for(Mob mob : d) powerAttack(this, mob, 1);
 		}else{
 			putll("どのキャラに攻撃する?");
-			for(int l = 1; l < d.length + 1; l++){
+			for(int l = 1; l < d.length - 1; l++){
 				if(!d[l].isDeath() && !d[l].isFlee()) putfn("%d.%s", l, d[l - 1].getName());
 			}
 			char c = input();
