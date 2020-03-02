@@ -9,7 +9,7 @@ public class Spear extends Weapon
 	public Spear()
 	{
 		name = "初めの槍";
-		description = new String[]{"AP +2 SP +1 AVOID +1", "初めてのプレイヤーのための槍。"};
+		description = new String[]{"AP +2 SP +1 AVOID +1%", "初めてのプレイヤーのための槍。"};
 		st.ap = 2;
 		st.sp = 1;
 		st.avoid = 1;

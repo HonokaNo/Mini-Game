@@ -14,7 +14,7 @@ public class Sword extends Weapon
 	public Sword()
 	{
 		name = "初めの剣";
-		description = new String[]{"AP +2 BP +1 AVOID +1", "初めてのプレイヤーのための剣。"};
+		description = new String[]{"AP +2 BP +1 AVOID +1%", "初めてのプレイヤーのための剣。"};
 		st.ap = 2;
 		st.bp = 1;
 		st.avoid = 1;

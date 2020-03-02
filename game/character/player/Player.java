@@ -18,6 +18,9 @@ import static game.Game.*;
  */
 public class Player extends Mob
 {
+	/* 最大レベル */
+	public static final int MAX = 20;
+
 	/* ステータスとして付与できるポイント */
 	private long point = 20;
 
@@ -110,7 +113,7 @@ public class Player extends Mob
 	 */
 	public void addWeapon(Weapon w)
 	{
-		if(weapon != null && !(weapon instanceof None)){
+		if(w != null && (weapon == null || weapon instanceof None)){
 			status.add(w.getStatus());
 			weapon = w;
 		}
@@ -123,7 +126,7 @@ public class Player extends Mob
 	{
 		if(weapon != null && !(weapon instanceof None)){
 			status.sub(weapon.getStatus());
-			weapon = new None();
+			weapon = null;
 		}
 	}
 
@@ -301,27 +304,30 @@ public class Player extends Mob
 	 */
 	public void addExp(long exp)
 	{
-		nowexp += exp;
-		totalexp += exp;
+		if(status.lv < MAX){
+			nowexp += exp;
+			totalexp += exp;
 
-		while(nowexp >= nextexp){
-			long p = 3;
-			point += p;
+			while(nowexp >= nextexp){
+				long p = 3;
+				point += p;
 
-			putfn("レベルアップ! %d%s%d", status.lv, ARROW, status.lv + 1);
-			putfn("ポイントを%d手に入れた!", p);
-			status.lv++;
-			putl("ポイントを振ってみる?");
-			putl("1.しない");
-			putl("2.する!");
-			if(input() == '2') pointed();
+				putfn("レベルアップ! %d%s%d", status.lv, ARROW, status.lv + 1);
+				putfn("ポイントを%d手に入れた!", p);
+				status.lv++;
+				putl("ポイントを振ってみる?");
+				putl("1.しない");
+				putl("2.する!");
+				if(input() == '2') pointed();
 
-			nowexp -= nextexp;
-			long a = status.lv + status.lv * 3;
-			long b = status.lv + 5;
-			nextexp = (a + b) / 2;
-			maxheal();
-		}
+				nowexp -= nextexp;
+				long a = status.lv + status.lv * 3;
+				long b = status.lv + 5;
+				nextexp = (a + b) / 2;
+				maxheal();
+			}
+		}else putl("最大レベルなので経験値はもらえない!!!");
+		if(status.lv == MAX) putl("最大レベルになった!おめでとう!");
 	}
 
 	/**
@@ -336,6 +342,7 @@ public class Player extends Mob
 		ItemManager.addItem(i, num);
 	}
 
+	/* 攻撃処理 */
 	private void attack(Mob a, Mob[] d)
 	{
 		if(getWeapon().getFlags()[0]){
@@ -344,14 +351,21 @@ public class Player extends Mob
 		}else{
 			putll("どのキャラに攻撃する?");
 			for(int l = 1; l < d.length + 1; l++){
-				putfn("%d.%s", l, d[l - 1].getName());
+				if(!d[l].isDeath() && !d[l].isFlee()) putfn("%d.%s", l, d[l - 1].getName());
 			}
 			char c = input();
+			/* charを数値に変換 */
 			int selected = Character.digit(c, 10);
 
 			/* 攻撃対象が見つかった */
 			if(selected >= 1 && selected <= d.length){
-				powerAttack(this, d[selected - 1], 1);
+				if(d[selected - 1].isDeath()){
+					putl("その敵はもう、死んでいる!");
+					attack(a, d);
+				}else if(d[selected - 1].isFlee()){
+					putl("その敵はもう逃げだしていなくなっている!");
+					attack(a, d);
+				}else powerAttack(this, d[selected - 1], 1);
 			}else putl("攻撃しようとしていたはずなのに敵が見つからない!");
 		}
 	}
@@ -382,6 +396,13 @@ public class Player extends Mob
 		}
 	}
 
+	/**
+	 * セーブする
+	 *
+	 * @param fos 出力時に使用する暗号化ストリーム
+	 *
+	 * @throws IOException 入出力例外が発生した場合
+	 */
 	public void s_write(LockedOutputStream fos) throws IOException
 	{
 		fos.write(Long2Bytes(status.lv),  0, 8);
@@ -423,6 +444,13 @@ public class Player extends Mob
 		bw.write(name.toCharArray(), 0, name.length());
 	}
 
+	/**
+	 * セーブデータを読み込む
+	 *
+	 * @param fis 読み込み時に使用する暗号化ストリーム
+	 *
+	 * @throws IOException 入出力例外が発生した場合
+	 */
 	public void s_read(LockedInputStream fis) throws IOException
 	{
 		byte[] bytes = new byte[8];
@@ -496,6 +524,7 @@ public class Player extends Mob
 		br.close();
 	}
 
+	/* long型をbyte[]型に変換 */
 	private byte[] Long2Bytes(long l)
 	{
 		byte[] bytes = new byte[8];
@@ -510,6 +539,7 @@ public class Player extends Mob
 		return bytes;
 	}
 
+	/* byte[]型をlong型に変換 */
 	private long Bytes2Long(byte[] b)
 	{
 		long l = 0;

@@ -13,10 +13,10 @@ public class Slime extends Enemy
 
 		status.lv = 1;
 		status.mhp = 8;
-		status.ap = 4;
-		status.bp = 4;
-		status.map = 4;
-		status.mbp = 4;
+		status.ap = 3;
+		status.bp = 3;
+		status.map = 3;
+		status.mbp = 3;
 		status.sp = 3;
 		status.mmp = 1;
 
@@ -26,7 +26,6 @@ public class Slime extends Enemy
 
 	@Override public void command(Mob[] m, Mob[] n)
 	{
-		int l = (int)rand(m.length);
-		powerAttack(this, m[l], 0);
+		powerAttack(this, m[(int)rand(m.length)], 0);
 	}
 }

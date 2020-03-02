@@ -1,6 +1,9 @@
 package game.character;
 
+import java.util.ArrayList;
+
 import game.Random;
+import game.character.Effect;
 import game.character.player.Player;
 
 import static game.Console.*;
@@ -22,6 +25,9 @@ public abstract class Mob
 
 	/* 防御を構えているか */
 	private boolean defence = false;
+
+	/* エフェクトのリスト */
+	private ArrayList<Effect> effects = new ArrayList<>(0);
 
 	/* コンストラクタより先に実行される */
 	/* 子クラスのコンストラクタより先に呼び出す */
@@ -200,5 +206,38 @@ public abstract class Mob
 		}
 
 		if(b.isDefence()) b.getStatus().bp /= 2;
+	}
+
+	/**
+	 * 一時効果を追加
+	 *
+	 * @param e 追加する効果
+	 */
+	public void addEffect(Effect e)
+	{
+		status.add(e.getStatus());
+	}
+
+	/**
+	 * 一時効果を消去
+	 *
+	 * @param e 削除する効果
+	 */
+	public void subEffect(int index)
+	{
+		status.sub(effects.get(index).getStatus());
+		effects.remove(index);
+	}
+
+	/**
+	 * 一時効果の配列
+	 *
+	 * @return 全ての現在保有する効果を持つ配列
+	 */
+	public Effect[] getEffects()
+	{
+		Effect[] ef = new Effect[effects.size()];
+		effects.toArray(ef);
+		return ef;
 	}
 }

@@ -1,5 +1,6 @@
 package game;
 
+import game.character.Effect;
 import game.character.Mob;
 import game.character.enemy.Enemy;
 import game.character.player.Player;
@@ -89,6 +90,17 @@ public final class Battle
 				}
 
 				return;
+			}
+		}
+
+		/* 素早さが遅い順に効果処理(順番に意味はない) */
+		for(int l = 0; l < mobs.length; l++){
+			Effect[] effect = mobs[l].getEffects();
+			for(int m = 0; m < effect.length; m++){
+				/* 残りターンが0になった */
+				if(effect[m].subTurn()){
+					mobs[l].subEffect(m);
+				}
 			}
 		}
 

@@ -13,7 +13,6 @@ public class Axe extends Weapon
 		st.ap = 3;
 		st.bp = 2;
 		st.sp = -2;
-		st.avoid = 0;
 		flags[1] = true;
 
 		type = WeaponType.WEAPON_AXE;

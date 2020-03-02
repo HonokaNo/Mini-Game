@@ -38,6 +38,8 @@ build :
 	make game/character/Mob.class
 	make game/character/enemy/Enemy.class
 	make game/character/enemy/slime/Slime.class
+	make game/character/enemy/slime/HopSlime.class
+	make game/character/enemy/slime/SlowSlime.class
 	make game/character/player/Player.class
 	make game/ConsEsc.class
 	make game/Console.class

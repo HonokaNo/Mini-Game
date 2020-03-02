@@ -3,13 +3,10 @@ package game;
 import java.io.IOException;
 
 import game.ConsEsc;
-import game.character.Mob;
-import game.character.Status;
-import game.character.enemy.slime.Slime;
+import game.character.*;
+import game.character.enemy.slime.*;
 import game.character.player.Player;
-import game.item.Item;
-import game.item.ItemManager;
-import game.item.Items;
+import game.item.*;
 import game.item.weapon.Weapon;
 import game.item.weapon.axe.Axe;
 import game.item.weapon.gloves.Glove;
@@ -87,7 +84,10 @@ public final class Game
 		if(c == '1'){
 			long rand = Random._rand();
 			Mob[] enemy;
-			if(rand <= 75) enemy = new Mob[]{new Slime()};
+			if(rand <= 20) enemy = new Mob[]{new HopSlime(), new Slime(), new SlowSlime()};
+			if(rand <= 30) enemy = new Mob[]{new HopSlime(), new Slime()};
+			else if(rand <= 75) enemy = new Mob[]{new Slime()};
+			else if(rand <= 95) enemy = new Mob[]{new SlowSlime(), new Slime()};
 			else enemy = new Mob[]{new Slime(), new Slime()};
 			battleInit(new Mob[]{loginedPlayer}, enemy);
 		}else if(c == '2'){
@@ -156,7 +156,7 @@ public final class Game
 			/* 自分自身を見つめる */
 			/* ステータスの表示 */
 			write("-------------------------");
-			putfn("%s lv.%d", loginedPlayer.getName(), st.lv);
+			putfn("%s lv.%d%s", loginedPlayer.getName(), st.lv, st.lv == Player.MAX ? "(MAX)" : "");
 			putfn("status point:%d", loginedPlayer.getPoint());
 			write("-------------------------");
 			putfn("HP:%d/%d", st.hp, st.mhp);
@@ -203,11 +203,9 @@ public final class Game
 
 						maintown();
 					}
-				}else if(c == 'n'){
-					if(end != item.length) pos += 6;
-				}else if(c == 'b'){
-					if(pos != 0) pos -= 6;
-				}else write("アイテムを使うのをやめた。");
+				}else if(c == 'n') if(end != item.length) pos += 6;
+				else if(c == 'b') if(pos != 0) pos -= 6;
+				else write("アイテムを使うのをやめた。");
 			}else write("アイテムを持っていなかった。");
 		}else if(c == '6'){
 			write("セーブします!");
@@ -218,7 +216,7 @@ public final class Game
 			SaveData.write();
 			write("お疲れ様!ゲームを終了します!");
 			write(loginedPlayer.getName() + "さんがログアウトしました!");
-			return;
+			System.exit(0);
 		}else error("関係ない入力がされました。");
 
 		write("");

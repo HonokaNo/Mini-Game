@@ -68,17 +68,19 @@ public abstract class Weapon extends Item
 	{
 		if(p.getWeapon() instanceof None){
 			/* 付けていないのでつける */
+			p.removeWeapon();
 			p.addWeapon(this);
-			putf("%sを装備しました!%s", getName(), NEWLINE);
+			putfn("%sを装備しました!", getName());
 		}else if(p.getWeapon().getName().equals(getName())){
 			/* 武器を外す */
 			p.removeWeapon();
-			putf("%sを外しました!%s", getName(), NEWLINE);
+			p.addWeapon(new None());
+			putfn("%sを外しました!", getName());
 		}else{
 			/* 武器を外してつける */
 			p.removeWeapon();
 			p.addWeapon(this);
-			putf("%sを装備しました!%s", getName(), NEWLINE);
+			putfn("%sを装備しました!", getName());
 		}
 	}
 }
