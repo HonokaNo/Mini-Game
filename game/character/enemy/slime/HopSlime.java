@@ -36,6 +36,6 @@ public class HopSlime extends Enemy
 			st.sp = 2;
 			Effect e = new Effect(5, st, "ホッピング");
 			addEffect(e);
-		}else if(rand <= 80) powerAttack(this, m[(int)rand(m.length)], 0);
+		}else if(rand <= 80) powerAttack(this, m[(int)rand(m.length)], 1);
 	}
 }

@@ -36,6 +36,6 @@ public class SlowSlime extends Enemy
 			st.bp = 3;
 			Effect e = new Effect(5, st, "タートルプロテクト");
 			addEffect(e);
-		}else if(rand <= 80) powerAttack(this, m[(int)rand(m.length)], 0);
+		}else if(rand <= 80) powerAttack(this, m[(int)rand(m.length)], 1);
 	}
 }

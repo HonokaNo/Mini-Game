@@ -10,11 +10,15 @@ import game.item.*;
 import game.item.weapon.Weapon;
 import game.item.weapon.axe.Axe;
 import game.item.weapon.gloves.Glove;
+import game.item.weapon.jsword.JSword;
 import game.item.weapon.knife.Knife;
 import game.item.weapon.longsword.LongSword;
 import game.item.weapon.scythe.Scythe;
 import game.item.weapon.spear.Spear;
 import game.item.weapon.sword.Sword;
+import game.magic.Magic;
+import game.magic.MagicManager;
+import game.magic.light.Heal;
 
 import static game.Battle.*;
 import static game.Console.*;
@@ -59,7 +63,7 @@ public final class Game
 				putfn("まずはステータスを振ってみよう!");
 				loginedPlayer.pointed();
 			}
-			putfn("%s lv.%dがログインしたよ!" + NEWLINE + NEWLINE, loginedPlayer.getName(), loginedPlayer.getStatus().lv);
+			putfn("%s lv.%dがログインしたよ!", loginedPlayer.getName(), loginedPlayer.getStatus().lv);
 			write("");
 			maintown();
 		/* System.exitだとファイナライザが呼ばれない(らしい)ので */
@@ -68,8 +72,16 @@ public final class Game
 		}else if(c == 'x') return;
 	}
 
+	static int pos = 0;
+
 	private static void maintown()
 	{
+		Heal heal = new Heal();
+		if(MagicManager.addMagic(heal)){
+			putfn("魔法実装記念! 新たな力を先行体験しよう!!!");
+			putfn("%sは%sを覚えた!", loginedPlayer.getName(), heal.getName());
+		}
+
 		write("---初めの町 住宅街---");
 		putll(loginedPlayer.getName() + "はどうしようか?");
 		write("1.冒険に外へ行く");
@@ -82,14 +94,37 @@ public final class Game
 		char c = input();
 
 		if(c == '1'){
-			long rand = Random._rand();
-			Mob[] enemy;
-			if(rand <= 20) enemy = new Mob[]{new HopSlime(), new Slime(), new SlowSlime()};
-			if(rand <= 30) enemy = new Mob[]{new HopSlime(), new Slime()};
-			else if(rand <= 75) enemy = new Mob[]{new Slime()};
-			else if(rand <= 95) enemy = new Mob[]{new SlowSlime(), new Slime()};
-			else enemy = new Mob[]{new Slime(), new Slime()};
-			battleInit(new Mob[]{loginedPlayer}, enemy);
+			write("どちらへ行こう?");
+			write("1.小さな森の中");
+			write("2.迷い(そう)な竹林の中");
+			write("x.戻る");
+			c = input();
+
+			if(c == '1'){
+				write("--- スライムの森 ---");
+				long rand = Random._rand();
+				Mob[] enemy;
+				if(rand <= 20) enemy = new Mob[]{new HopSlime(), new Slime(), new SlowSlime()};
+				if(rand <= 30) enemy = new Mob[]{new HopSlime(), new Slime()};
+				else if(rand <= 75) enemy = new Mob[]{new Slime()};
+				else if(rand <= 95) enemy = new Mob[]{new SlowSlime(), new Slime()};
+				else enemy = new Mob[]{new Slime(), new Slime()};
+				battleInit(new Mob[]{loginedPlayer}, enemy);
+			}else if(c == '2'){
+				write("おや、あんたは誰だ?");
+				write("まあいいか。ここに来るってことは、それなりな手練れだろ?");
+				write("少し見て行ってや。");
+				putfn("現在のお金:$%d", loginedPlayer.getMoney());
+				JSword jsword = new JSword();
+				putfn("1.%s $100", jsword.getName());
+				putfn("%s", jsword.getDescription()[0]);
+				write("x.帰る");
+				c = input();
+
+				String msg = "お金がねぇぞ";
+				if(c == '1') buyItem(100, jsword, msg);
+				else write("また来てくれな。");
+			}else maintown();
 		}else if(c == '2'){
 			/* 市場に散歩に行く */
 			/* アイテムの購入やイベントの発生など */
@@ -172,12 +207,28 @@ public final class Game
 			write("-------------------------");
 			putfn("weapon:%s", loginedPlayer.getWeapon() == null ? "つけてないよ" : loginedPlayer.getWeapon().getName());
 			write("-------------------------");
+			write("");
+			write("1.魔法を見る");
+			write("x.戻る");
+			c = input();
+
+			if(c == '1'){
+				Magic[] magic = MagicManager.getMagics();
+				if(magic != null){
+					for(int l = 0; l < magic.length; l++){
+						write("・" + magic[l].getName());
+						for(int m = 0; m < magic[l].getDescription().length; m++){
+							write(magic[l].getDescription()[m]);
+						}
+					}
+				}else write("魔法を覚えていないようだ!");
+			}else maintown();
 		}else if(c == '4') loginedPlayer.pointed();
 		else if(c == '5'){
 			Items[] item = ItemManager.getItems();
 			if(item != null){
 				clear(useAnsi);
-				int pos = 0, spos = 1;
+				int spos = 1;
 				int end = (pos + 10) > item.length ? item.length : (pos + 10);
 				for(int l = pos; l < end; l++, spos++){
 					putfn("%d.%s x%d", spos, item[l].getItem().getName(), item[l].getNumber());
@@ -241,7 +292,7 @@ public final class Game
 	 *
 	 * @return ANSIエスケープを使用する場合はtrue
 	 */
-	public static boolean getAnsi()
+	public static boolean isAnsi()
 	{
 		return useAnsi;
 	}
@@ -323,5 +374,10 @@ public final class Game
 				}
 			}else write(msg);
 		}
+	}
+
+	public static Player getLoginedPlayer()
+	{
+		return loginedPlayer;
 	}
 }

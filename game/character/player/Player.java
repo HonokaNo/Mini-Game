@@ -6,6 +6,7 @@ import game.character.*;
 import game.io.*;
 import game.item.*;
 import game.item.weapon.*;
+import game.magic.*;
 
 import static game.Console.*;
 import static game.Game.*;
@@ -350,8 +351,8 @@ public class Player extends Mob
 			for(Mob mob : d) powerAttack(this, mob, 1);
 		}else{
 			putll("どのキャラに攻撃する?");
-			for(int l = 1; l < d.length - 1; l++){
-				if(!d[l].isDeath() && !d[l].isFlee()) putfn("%d.%s", l, d[l - 1].getName());
+			for(int l = 0; l < d.length; l++){
+				if(!d[l].isDeath() && !d[l].isFlee()) putfn("%d.%s", l + 1, d[l].getName());
 			}
 			char c = input();
 			/* charを数値に変換 */
@@ -370,6 +371,100 @@ public class Player extends Mob
 		}
 	}
 
+	private void magic(Mob[] m, Mob[] n)
+	{
+		Magic[] magic = MagicManager.getMagics();
+		if(magic != null){
+			clear(isAnsi());
+			pos = 0;
+			int spos = 1;
+			int end = (pos + 10) > magic.length ? magic.length : (pos + 10);
+			for(int l = pos; l < end; l++, spos++){
+				putfn("%d.%s 消費:%d", spos, magic[l].getName(), magic[l].getUse());
+				putfn("%s", magic[l].getDescription()[0]);
+			}
+			if(end != magic.length) write("n.次へ");
+			if(pos != 0) write("b.戻る");
+			write("x.やめる");
+			char c = input();
+
+			if(c >= '1' && c <= '9'){
+				/* どれを押したかの番号を取得 0-8 */
+				int input = (int)(c - '1');
+				int ipos = pos + input;
+//				if(ipos >= magic.length) write("そんなアイテムは存在しません。");
+				if(ipos >= magic.length) write("そんな魔法はない!");
+				else magic[ipos].use(this, n);
+			}else if(c == 'n') if(end != magic.length){
+				pos += 9;
+				magic(m, n);
+			}else if(c == 'b') if(pos != 0){
+				pos -= 9;
+				magic(m, n);
+			}else{
+				write("魔法詠唱をやめた!。");
+//				command(m, n);
+				return;
+			}
+		}else{
+/*			putl("アイテムを持っていない...");
+			putl("そこらの小石でも投げてやった...");
+			putl("ダメージは全くなさそうだ... むしろ怒ってる?");*/
+			putl("魔法を覚えていない!");
+			command(m, n);
+		}
+	}
+
+	private void item(Mob[] m, Mob[] n)
+	{
+		Items[] item = ItemManager.getItems();
+		if(item != null){
+			clear(isAnsi());
+			pos = 0;
+			int spos = 1;
+			int end = (pos + 10) > item.length ? item.length : (pos + 10);
+			for(int l = pos; l < end; l++, spos++){
+				putfn("%d.%s x%d", spos, item[l].getItem().getName(), item[l].getNumber());
+				putfn("%s", item[l].getItem().getDescription()[0]);
+			}
+			if(end != item.length) write("n.次へ");
+			if(pos != 0) write("b.戻る");
+			write("x.やめる");
+			char c = input();
+
+			if(c >= '1' && c <= '9'){
+				/* どれを押したかの番号を取得 0-8 */
+				int input = (int)(c - '1');
+				int ipos = pos + input;
+				if(ipos >= item.length) write("そんなアイテムは存在しません。");
+				else{
+					if(item[pos].getItem() instanceof Weapon){
+						write("戦闘中に武器は使えない!");
+//						command(m, n);
+						return;
+					}else item[ipos].getItem().use(this);
+				}
+			}else if(c == 'n') if(end != item.length){
+				pos += 9;
+				item(m, n);
+			}else if(c == 'b') if(pos != 0){
+				pos -= 9;
+				item(m, n);
+			}else{
+				write("アイテムを使うのをやめた。");
+//				command(m, n);
+				return;
+			}
+		}else{
+			putl("アイテムを持っていない...");
+			putl("そこらの小石でも投げてやった...");
+			putl("ダメージは全くなさそうだ... むしろ怒ってる?");
+			command(m, n);
+		}
+	}
+
+	static int pos = 0;
+
 	@Override public void command(Mob[] m, Mob[] n)
 	{
 		putll(getName() + "はどうする?");
@@ -384,11 +479,28 @@ public class Player extends Mob
 		if(c == '1') attack(this, n);
 		else if(c == '2') defence();
 		else if(c == '3'){
-			putl("魔法を覚えていない...");
+/*			Magic[] magic = MagicManager.getMagics();
+			if(magic != null){
+				clear(isAnsi());
+				pos = 0;
+				int spos = 1;
+				int end = (pos + 10) > magic.length ? magic.length : (pos + 10);
+				for(int l = pos; l < end; l++, spos++){
+					putfn("%d.%s 消費:%d", spos, magic[l].getName(), magic[l].getUse());
+					putfn("%s", magic[l].getDescription()[0]);
+				}
+				if(end != magic.length) write("n.次へ");
+				if(pos != 0) write("b.戻る");
+			}else{
+				putl("魔法を覚えていない...");
+				command(m, n);
+			}*/
+			magic(m, n);
 		}else if(c == '4'){
-			putl("アイテムを持っていない...");
+/*			putl("アイテムを持っていない...");
 			putl("そこらの小石でも投げてやった...");
-			putl("ダメージは全くなさそうだ... むしろ怒ってる?");
+			putl("ダメージは全くなさそうだ... むしろ怒ってる?");*/
+			item(m, n);
 		}else if(c == '5'){
 			flee();
 			if(isFlee()) putfn("%sは戦闘から逃げ出せた!", getName());
@@ -437,6 +549,14 @@ public class Player extends Mob
 				fos.write(Long2Bytes(items[l].getNumber()), 0, 8);
 			}
 		}else fos.write(Long2Bytes(0), 0, 8);
+
+		Magic[] magics = MagicManager.getMagics();
+		if(magics != null){
+			fos.write(Long2Bytes(magics.length), 0, 8);
+			for(int l = 0; l < magics.length; l++){
+				fos.write(Long2Bytes(magics[l].getNumber()), 0, 8);
+			}
+		}
 	}
 
 	public void s_writename(LockedWriter bw) throws IOException
@@ -510,6 +630,18 @@ public class Player extends Mob
 			fis.read(bytes, 0, 8);
 			itemcount = Bytes2Long(bytes);
 			ItemManager.addItem(ItemManager.getItem(itemnum), itemcount);
+		}
+		int i = fis.read(bytes, 0, 8);
+		/* もうデータがない=過去のバージョンから引き継ぎ */
+		/* その場合特にいじらない */
+		if(i == -1);
+		else{
+			num = (int)Bytes2Long(bytes);
+			for(int l = 0; l < num; l++){
+				fis.read(bytes, 0, 8);
+				itemnum = (int)Bytes2Long(bytes);
+				MagicManager.addMagic(MagicManager.getMagic(itemnum));
+			}
 		}
 	}
 

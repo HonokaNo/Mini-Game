@@ -192,6 +192,11 @@ public abstract class Mob
 		long damage = (long)base;
 		if(damage < limit) damage = limit;
 
+		/* 非常に防御が高いときダメージ低減 */
+		if(b.getStatus().bp + 15 >= b.getStatus().ap) damage -= Math.ceil(damage / 10);
+
+		if(damage < 0) damage = 0;
+
 		if(status.avoid >= Random._rand()) putf("%sは攻撃を回避した!", b.getName());
 		else{
 			/* 即死 */

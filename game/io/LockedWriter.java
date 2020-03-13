@@ -28,6 +28,6 @@ public class LockedWriter extends BufferedWriter
 				write(data);
 			}
 		}
-		super.write(cbuf, off, len);
+//		super.write(cbuf, off, len);
 	}
 }

@@ -16,6 +16,10 @@ public enum WeaponType
 	 */
 	WEAPON_GLOVE,
 	/**
+	 * 武器が日本刀である
+	 */
+	WEAPON_JSWORD,
+	/**
 	 * 武器が小刀である
 	 */
 	WEAPON_KNIFE,

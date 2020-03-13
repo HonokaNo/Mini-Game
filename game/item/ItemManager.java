@@ -9,11 +9,13 @@ public final class ItemManager
 
 	public static Item getItem(int num)
 	{
-		return ItemList.itemlist[num];
+		if(ItemList.itemlist.length > num) return ItemList.itemlist[num];
+		return null;
 	}
 
 	/**
 	 * 全てのアイテムを格納した配列を返します。
+	 * なお、新たな配列を生成して返すので変更が自由に行えます。
 	 *
 	 * @return 全ての所持しているアイテムのある配列 もしアイテムを所持していない場合nullが返る
 	 */
@@ -29,6 +31,7 @@ public final class ItemManager
 
 	/**
 	 * アイテムを追加します。
+	 * 万が一アイテムがあふれた場合の処理はしていないので注意!
 	 *
 	 * @param i 追加するアイテム
 	 * @param num 追加する個数

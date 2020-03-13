@@ -1,3 +1,5 @@
+VERSION = 0.0.1p
+
 # jdk path
 JDK = 
 # java runtime path
@@ -6,6 +8,8 @@ JAVA  = $(JDK)java
 JAVAC = $(JDK)javac
 # javadoc path
 JAVADOC = $(JDK)javadoc
+# jar path
+JAR = $(JDK)jar
 REMOVE = del
 REMDIR = del
 REMOPT = /f /s
@@ -23,17 +27,23 @@ build :
 	make game/io/LockedWriter.class
 	make game/item/Item.class
 	make game/item/Items.class
+	make game/item/ItemManager.class
 	make game/item/weapon/WeaponType.class
 	make game/item/weapon/Weapon.class
 	make game/item/weapon/None.class
 	make game/item/weapon/axe/Axe.class
 	make game/item/weapon/gloves/Glove.class
+	make game/item/weapon/jsword/JSword.class
 	make game/item/weapon/knife/Knife.class
 	make game/item/weapon/longsword/LongSword.class
 	make game/item/weapon/scythe/Scythe.class
 	make game/item/weapon/spear/Spear.class
 	make game/item/weapon/sword/Sword.class
 	make game/item/ItemList.class
+	make game/magic/Magic.class
+	make game/magic/MagicManager.class
+	make game/magic/light/Heal.class
+	make game/magic/MagicList.class
 	make game/character/Status.class
 	make game/character/Mob.class
 	make game/character/enemy/Enemy.class
@@ -54,7 +64,11 @@ javadoc :
 	$(JAVADOC) -encoding $(ENCODING) -d ..\docs -use -version -nohelp -charset $(ENCODING) -sourcetab 4 -docencoding $(ENCODING) \
 		game game.character game.character.player game.item game.item.weapon \
 		game.item.weapon.axe game.item.weapon.gloves game.item.weapon.knife game.item.weapon.longsword \
-		game.item.weapon.scythe game.item.weapon.spear game.item.weapon.sword game.io
+		game.item.weapon.scythe game.item.weapon.spear game.item.weapon.sword game.io \
+		game.magic game.magic.light
+
+jar:
+	$(JAR) cvfm ../Gam$(VERSION).jar MANIFEST.MF
 
 %.class : %.java
 	$(JAVAC) -encoding $(ENCODING) $*.java

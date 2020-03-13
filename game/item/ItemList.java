@@ -3,6 +3,7 @@ package game.item;
 import game.item.weapon.None;
 import game.item.weapon.axe.*;
 import game.item.weapon.gloves.*;
+import game.item.weapon.jsword.*;
 import game.item.weapon.knife.*;
 import game.item.weapon.longsword.*;
 import game.item.weapon.scythe.*;
@@ -21,6 +22,7 @@ final class ItemList
 	 * 初めの鎌:5
 	 * 初めの槍:6
 	 * 初めの剣:7
+	 * 日本刀 "数珠丸":8
 	 */
 	static Item[] itemlist = {
 		new None(),
@@ -31,5 +33,6 @@ final class ItemList
 		new Scythe(),
 		new Spear(),
 		new Sword(),
+		new JSword(),
 	};
 }

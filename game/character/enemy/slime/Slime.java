@@ -26,6 +26,6 @@ public class Slime extends Enemy
 
 	@Override public void command(Mob[] m, Mob[] n)
 	{
-		powerAttack(this, m[(int)rand(m.length)], 0);
+		powerAttack(this, m[(int)rand(m.length)], 1);
 	}
 }
